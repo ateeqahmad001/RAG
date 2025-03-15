@@ -2,7 +2,11 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
 from guardrail import guardril_check,decide_guardril
 from isformal import isformal_check,decide_isformal,formal_llm
