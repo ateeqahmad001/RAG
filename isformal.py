@@ -1,6 +1,6 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel, Field
-from config import llm
+from main import llm
 from state import graph_state
 
 class isformal_prompt(BaseModel):

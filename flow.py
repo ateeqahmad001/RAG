@@ -1,4 +1,4 @@
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
@@ -19,10 +19,10 @@ from langgraph.graph import StateGraph,START,END
 from IPython.display import Image, display
 from config import llm
 
-def run_pipeline(query: str) -> str:
+def run_pipeline(query: str,pdf_path: str) -> str:
     from state import graph_state
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    loader = PyPDFLoader("speech.pdf").load()
+    loader = PyPDFLoader(pdf_path).load()
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     docs = splitter.split_documents(loader)
     vector = FAISS.from_documents(docs, embedding=embeddings)
@@ -33,7 +33,7 @@ def run_pipeline(query: str) -> str:
         document = retriever.invoke(question) 
         return {"documents": document, "question": question}
 
-    state = {"question": query}
+    question = {"question": query}
 
     flow = StateGraph(graph_state)
     flow.add_node("guardril_check",guardril_check)
@@ -81,4 +81,5 @@ def run_pipeline(query: str) -> str:
     )
     flow.add_edge("formal",END)
     flow = flow.compile()
-    display(Image(flow.get_graph().draw_mermaid_png()))
+    response = flow.invoke(question,{"recursion_limit":10})
+    return response['generation']

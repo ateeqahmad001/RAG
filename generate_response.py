@@ -1,5 +1,5 @@
 from langchain_core.messages import HumanMessage
-from config import llm
+from main import llm
 from state import graph_state
 
 rag_prompt = """
