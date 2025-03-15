@@ -80,4 +80,4 @@ def run_pipeline(query: str,pdf_path: str) -> str:
     flow.add_edge("formal",END)
     flow = flow.compile()
     response = flow.invoke(question,{"recursion_limit":10})
-    return response['generation']
+    return response['generation'].content
