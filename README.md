@@ -33,14 +33,4 @@ streamlit run main.py
 
 ## Project Structure
 
-rag/
-├── config.py              # LLM configuration and API setup
-├── flow.py                # Main logic to process queries
-├── guardrail.py           # Guardrail checks for content filtering
-├── hallucination.py       # Detects potential hallucinations inresponses
-├── grade_doc.py           # Grades retrieved documents for relevance
-├── isformal.py            # Checks the formality of responses
-├── generate_response.py   # Generates final responses from the LLM
-├── main.py                # Streamlit UI for user interaction
-├── requirements.txt       # Required dependencies
-├── README.md              # Project documentation
+rag/ ├── config.py # LLM configuration and API setup ├── flow.py # Main logic to process queries ├── guardrail.py # Guardrail checks for content filtering ├── hallucination.py # Detects potential hallucinations in responses ├── grade_doc.py # Grades retrieved documents for relevance ├── isformal.py # Checks the formality of responses ├── generate_response.py # Generates final responses from the LLM ├── main.py # Streamlit UI for user interaction ├── requirements.txt # Required dependencies ├── README.md # Project documentation
