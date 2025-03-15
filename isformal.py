@@ -1,12 +1,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel, Field
-from main import llm
+import config
 from state import graph_state
 
 class isformal_prompt(BaseModel):
     score_: str = Field(description="Indicates the query type. 'no' for Factual-Related queries, 'yes' for formal conversational queries")
 
-isformal_doc_llm = llm.with_structured_output(isformal_prompt)
+isformal_doc_llm = config.llm.with_structured_output(isformal_prompt)
 
 isformal_system_message="""
 Your task is to categorize the user's question into one of two categories:
@@ -55,6 +55,6 @@ Question : {question}
 def formal_llm(state:graph_state):
     question = state["question"]
     pmt = formal_prompt.format(question=question)
-    gener = llm.invoke([HumanMessage(content=pmt)])
+    gener = config.llm.invoke([HumanMessage(content=pmt)])
     return {"generation":gener,"question":question}
 

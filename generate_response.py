@@ -1,5 +1,5 @@
 from langchain_core.messages import HumanMessage
-from main import llm
+import config
 from state import graph_state
 
 rag_prompt = """
@@ -26,5 +26,5 @@ def generate_response(state:graph_state):
     # formatted_doc = "\n\n".join(d.page_content for d in doc)
 
     prompt = rag_prompt.format(context=formatted_doc,question=question)
-    generate = llm.invoke([HumanMessage(content=prompt)])
+    generate = config.llm.invoke([HumanMessage(content=prompt)])
     return {"documents":doc,"question":question,"generation":generate}

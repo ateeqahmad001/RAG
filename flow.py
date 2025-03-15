@@ -16,8 +16,6 @@ from generate_response import generate_response
 from web_search import web_search
 
 from langgraph.graph import StateGraph,START,END
-from IPython.display import Image, display
-from config import llm
 
 def run_pipeline(query: str,pdf_path: str) -> str:
     from state import graph_state

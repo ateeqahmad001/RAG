@@ -15,6 +15,7 @@ import streamlit as st
 import tempfile
 from flow import run_pipeline
 from config import create_llm
+import config
 
 st.title("LLM Query App with PDF Upload")
 
@@ -32,7 +33,7 @@ if st.button("Submit"):
             tmp_file.write(uploaded_pdf.read())
             tmp_pdf_path = tmp_file.name
 
-        llm = create_llm(groq_api_key, model)
+        config.llm = create_llm(groq_api_key, model)
 
         with st.spinner("Processing your query..."):
             result = run_pipeline(user_query,pdf_path=tmp_pdf_path)  

@@ -1,12 +1,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel, Field
-from main import llm
+import config
 from state import graph_state
 
 class guardril_check(BaseModel):
     score: str = Field(description="Binary score indicating compliance. 'yes' if the query complies with policy, 'no' otherwise.")
 
-guardril_doc_llm = llm.with_structured_output(guardril_check)
+guardril_doc_llm = config.llm.with_structured_output(guardril_check)
 
 guardrail_system_message = """
 Your task is to evaluate whether the user's message complies with the company's communication policies.

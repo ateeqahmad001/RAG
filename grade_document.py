@@ -1,12 +1,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel, Field
-from config import llm
+import config
 from state import graph_state
 
 class grade_doc(BaseModel):
     score : str = Field(description="Documents are relevant to the question, 'yes' or 'no'")
 
-grade_doc_llm = llm.with_structured_output(grade_doc)
+grade_doc_llm = config.llm.with_structured_output(grade_doc)
 grade_systm_msg = """You are a grader assessing relevance of a retrieved document to a user question. \n 
     If the document contains keyword(s) or semantic meaning related to the user question, grade it as relevant. \n
     It does not need to be a stringent test. The goal is to filter out erroneous retrievals. \n
