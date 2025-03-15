@@ -6,13 +6,15 @@ from langchain_community.document_loaders import PyPDFLoader
 
 from guardrail import guardril_check,decide_guardril
 from isformal import isformal_check,decide_isformal,formal_llm
-from grade_document import grade_document
+from grade_document import grade_document,decide_grade
 from hallucination import grade_halluc
 from generate_response import generate_response
+from web_search import web_search
 
 from langgraph.graph import StateGraph,START,END
 from IPython.display import Image, display
 from config import llm
+
 def run_pipeline(query: str) -> str:
     from state import graph_state
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -23,9 +25,9 @@ def run_pipeline(query: str) -> str:
     retriever = vector.as_retriever(search_kwargs={"k": 3})
 
     def retrieve_document(state: graph_state):
-    question = state['question']
-    document = retriever.invoke(question) 
-    return {"documents": document, "question": question}
+        question = state['question']
+        document = retriever.invoke(question) 
+        return {"documents": document, "question": question}
 
     state = {"question": query}
 
