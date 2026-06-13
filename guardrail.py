@@ -1,14 +1,12 @@
-from langchain_core.messages import SystemMessage, HumanMessage
+from __future__ import annotations
+
+from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
+
 import config
-from state import graph_state
+from state import GraphState
 
-class guardril_check(BaseModel):
-    score: str = Field(description="Binary score indicating compliance. 'yes' if the query complies with policy, 'no' otherwise.")
-
-guardril_doc_llm = config.llm.with_structured_output(guardril_check)
-
-guardrail_system_message = """
+GUARDRAIL_SYSTEM_PROMPT = """
 Your task is to evaluate whether the user's message complies with the company's communication policies.
 
 **Company Policies:**
@@ -26,28 +24,47 @@ Respond with:
 - **'no'**: if the message violates any policy.
 """
 
-guardrail_documents_prompt = "User's message: {question}"
+GUARDRAIL_USER_PROMPT = "User's message: {question}"
+
+BLOCKED_RESPONSE = (
+    "I'm sorry, I cannot respond to that kind of request. Let's keep it respectful."
+)
 
 
-def guardril_check(state:graph_state):
-    ques = state["question"]
-    prmpt = guardrail_documents_prompt.format(question=ques)
-    sc = guardril_doc_llm.invoke(
-            [
-                (SystemMessage(content=guardrail_system_message)),
-                (HumanMessage(content=prmpt))
-            ]
-      )
-    grade = sc.score
-    if grade=="no":
-        return {"generation":"I'm sorry, I cannot respond to that kind of request. Let's keep it respectful.","question":ques}
-    else:
-        return {"generation":[],"question":ques}
-    
-def decide_guardril(state:graph_state):
-    gener = state["generation"]
-    if not gener:
-        return "fine"
-    else:
-        return "Inappropriate query"
-      
+class GuardrailScore(BaseModel):
+    model_config = {"arbitrary_types_allowed": True}
+
+    score: str = Field(
+        description="Binary score indicating compliance. 'yes' if the query complies with policy, 'no' otherwise."
+    )
+
+
+def run_guardrail(state: GraphState) -> dict:
+    question = state["question"]
+    visited = list(state.get("visited_nodes", []))
+    visited.append("guardrail")
+
+    structured_llm = config.llm.with_structured_output(GuardrailScore)
+    user_prompt = GUARDRAIL_USER_PROMPT.format(question=question)
+
+    result = structured_llm.invoke(
+        [
+            SystemMessage(content=GUARDRAIL_SYSTEM_PROMPT),
+            HumanMessage(content=user_prompt),
+        ]
+    )
+
+    if result.score == "no":
+        return {
+            "generation": BLOCKED_RESPONSE,
+            "question": question,
+            "visited_nodes": visited,
+        }
+
+    return {"generation": None, "question": question, "visited_nodes": visited}
+
+
+def route_after_guardrail(state: GraphState) -> str:
+    if state.get("generation"):
+        return "blocked"
+    return "allowed"
