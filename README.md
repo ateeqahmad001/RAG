@@ -1,4 +1,4 @@
-# 🧠 DocMind — Agentic RAG
+# 🧠 Agentic RAG
 
 An intelligent, production-grade document question-answering system powered by a multi-node agentic
 retrieval-augmented generation (RAG) pipeline built with LangChain, LangGraph, Groq LLMs, FAISS, and Streamlit.
@@ -7,43 +7,10 @@ retrieval-augmented generation (RAG) pipeline built with LangChain, LangGraph, G
 
 ## Architecture
 
-DocMind uses a stateful LangGraph pipeline where each stage is a discrete node. The pipeline adapts
+It uses a stateful LangGraph pipeline where each stage is a discrete node. The pipeline adapts
 dynamically based on the query type and retrieval quality.
 
-```
-START
-  │
-  ▼
-[Guardrail]  ──blocked──▶  END
-  │ allowed
-  ▼
-[Formality Check]  ──conversational──▶  [Formal Responder]  ──▶  END
-  │ factual
-  ▼
-[Document Retrieval]
-  │
-  ▼
-[Document Grading]  ──max attempts──▶  [Fallback]  ──▶  END
-  │ relevant docs found               (canned response)
-  │ no relevant docs
-  │       │
-  │       ▼
-  │  [Increment Attempts]
-  │       │
-  │       ▼
-  │  [Web Search]  ──▶  [Document Grading]  (loop until relevant or max attempts)
-  │
-  ▼
-[Generate Response]
-  │
-  ▼
-[Hallucination Check]  ──hallucinated──▶  [Document Retrieval]  (retry)
-  │ grounded
-  ▼
-END
-```
-
-See `image/graph.png` for a visual representation of the compiled LangGraph pipeline.
+![Project Logo](./image/graph.png)
 
 ### Pipeline Nodes
 
@@ -64,13 +31,13 @@ See `image/graph.png` for a visual representation of the compiled LangGraph pipe
 
 ## Features
 
-- **Multi-PDF support** — Upload and query across multiple PDFs simultaneously
-- **Conversation memory** — Last 3 turns of Q&A are prepended as context for follow-up questions
-- **Pipeline trace** — Expandable section in UI shows which nodes were visited
-- **Source attribution** — Each answer shows which PDF and page the information came from
-- **Hallucination detection** — Responses are verified before being shown
-- **Web search fallback** — Falls back to Tavily web search when documents can't answer
-- **Max attempts guard** — After 3 failed retrieval attempts, returns a graceful fallback instead of hallucinating
+- **Multi-PDF support** : Upload and query across multiple PDFs simultaneously
+- **Conversation memory** : Last 3 turns of Q&A are prepended as context for follow-up questions
+- **Pipeline trace** : Expandable section in UI shows which nodes were visited
+- **Source attribution** : Each answer shows which PDF and page the information came from
+- **Hallucination detection** : Responses are verified before being shown
+- **Web search fallback** : Falls back to Tavily web search when documents can't answer
+- **Max attempts guard** : After 3 failed retrieval attempts, returns a graceful fallback instead of hallucinating
 
 ---
 
@@ -87,7 +54,7 @@ See `image/graph.png` for a visual representation of the compiled LangGraph pipe
 
 ```bash
 git clone https://github.com/your-username/docmind.git
-cd docmind
+cd RAG
 
 python -m venv venv
 source venv/bin/activate        # On Windows: venv\Scripts\activate
@@ -97,11 +64,7 @@ pip install -r requirements.txt
 
 ### Configuration
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your actual API keys:
+create `.env` with your actual API keys:
 
 ```
 GROQ_API_KEY=gsk_your_actual_key
@@ -118,55 +81,12 @@ streamlit run main.py
 
 The app will open at `http://localhost:8501`.
 
----
-
-## Deployment on Streamlit Community Cloud
-
-### Step 1 — Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/your-username/docmind.git
-git push -u origin main
-```
-
-> Make sure `.env` and `.streamlit/secrets.toml` are listed in `.gitignore` so secrets are never committed.
-
-### Step 2 — Create the App on Streamlit Cloud
-
-1. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
-2. Click **New app**
-3. Select your repository, branch (`main`), and main file path (`main.py`)
-4. Click **Deploy**
-
-### Step 3 — Set Secrets in the Dashboard
-
-In your app's dashboard, go to **Settings → Secrets** and paste:
-
-```toml
-GROQ_API_KEY = "gsk_your_groq_api_key_here"
-HF_TOKEN = "hf_your_huggingface_token_here"
-TAVILY_API_KEY = "tvly-your_tavily_api_key_here"
-DEFAULT_MODEL = "gemma2-9b-it"
-```
-
-### Step 4 — Done
-
-Streamlit Cloud will install dependencies from `requirements.txt` and deploy the app.
-No server management required. The free tier supports public apps.
-
----
 
 ## Project Structure
 
 ```
-docmind/
+RAG/
 ├── .env.example                  # Template for environment variables
-├── .streamlit/
-│   ├── config.toml               # Streamlit theme and server config
-│   └── secrets.toml.example      # Template for Streamlit Cloud secrets
 ├── image/
 │   └── graph.png                 # LangGraph pipeline visualization
 ├── config.py                     # LLM factory and environment loading
@@ -196,6 +116,3 @@ docmind/
 
 ---
 
-## License
-
-MIT
