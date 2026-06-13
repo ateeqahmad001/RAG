@@ -70,7 +70,7 @@ create `.env` with your actual API keys:
 GROQ_API_KEY=gsk_your_actual_key
 HF_TOKEN=hf_your_actual_token
 TAVILY_API_KEY=tvly-your_actual_key
-DEFAULT_MODEL=gemma2-9b-it
+DEFAULT_MODEL=llama-3.3-70b-versatile
 ```
 
 ### Running Locally
@@ -112,7 +112,7 @@ RAG/
 | `GROQ_API_KEY` | Yes | Groq API key for LLM inference |
 | `HF_TOKEN` | Yes | HuggingFace token for embedding model download |
 | `TAVILY_API_KEY` | Yes | Tavily API key for web search fallback |
-| `DEFAULT_MODEL` | No | Default Groq model (default: `gemma2-9b-it`) |
+| `DEFAULT_MODEL` | No | Default Groq model (default: `llama-3.3-70b-versatile`) |
 
 ---
 
